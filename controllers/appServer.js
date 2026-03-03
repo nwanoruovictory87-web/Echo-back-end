@@ -91,7 +91,9 @@ appServer.post("/register", formatIdToNumber, async (req, res) => {
     const responds = await registerUser.save();
     if (!responds.id)
       return res.status(500).json({ status: 500, massage: "Server error" });
-    res.status(200).json({ status: 201, number: number });
+    res
+      .status(200)
+      .json({ status: 201, number: number, userName: data.userName });
   } catch (error) {
     console.log(error);
   }
@@ -115,6 +117,7 @@ appServer.post("/v/login", async (req, res) => {
       massage: "login succesfull",
       authorization: null,
       number: findUser[0].userNumber,
+      userName: findUser[0].userName,
     });
   } catch (error) {
     console.log(error);
@@ -159,8 +162,7 @@ appServer.post("/a/contact", async (req, res) => {
     res.status(201).json({
       status: 200,
       massage: "Contact saved",
-      friendName: friendName,
-      friendNumber: friendNumber,
+      friendData: responds,
     });
   } catch (error) {
     console.log(error);

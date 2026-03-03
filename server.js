@@ -58,7 +58,10 @@ mongose.connect("mongodb://localhost:27017/").then(() => {
           if (findFriend.length === 0) return;
           const oldChatHistory = findFriend[0].friendMassages;
           const massageFormat = massage;
-          const chatHistory = [...oldChatHistory, massageFormat];
+          const chatHistory =
+            oldChatHistory.length !== 0
+              ? [...oldChatHistory, massageFormat]
+              : [massageFormat];
           const updateUserChatHistory = await friendsDetails.updateOne(
             { userId: userNumber, friendNumber: friendNumber },
             { $set: { friendMassages: chatHistory } },
@@ -69,10 +72,10 @@ mongose.connect("mongodb://localhost:27017/").then(() => {
             userId: friendNumber,
             friendNumber: userNumber,
           });
-          let pass = true;
-          //*=============== if friend dosent exist validate user does exist and and friend with friend number
+          //let pass = true;
+          //*=============== if friend dosent exist validate user does exist and add friend with friend number
           if (findUser.length === 0) {
-            pass = false;
+            //pass = false;
             const findUser = await userDetails.find({
               userNumber: friendNumber,
             });
@@ -85,28 +88,51 @@ mongose.connect("mongodb://localhost:27017/").then(() => {
             });
             const responds = await saveFriend.save();
             if (responds.length === 0) return;
-            pass = true;
-          }
-          if (!pass) return;
-          const useroldChatHistory = findUser[0].friendMassages;
-          const userMassageFormat = massage;
-          const userChatHistory = [...useroldChatHistory, userMassageFormat];
-          const updateUserFriendChatHistory = await friendsDetails.updateOne(
-            { userId: friendNumber, friendNumber: userNumber },
-            { $set: { friendMassages: userChatHistory } },
-          );
-          if (
-            updateUserChatHistory.acknowledged &&
-            updateUserFriendChatHistory.acknowledged
-          ) {
-            console.log("succesful");
+            //console.log(responds);
+            const useroldChatHistory = responds.friendMassages;
+            const userMassageFormat = massage;
+            const userChatHistory =
+              useroldChatHistory.length !== 0
+                ? [...useroldChatHistory, userMassageFormat]
+                : [userMassageFormat];
+            const updateUserFriendChatHistory = await friendsDetails.updateOne(
+              { userId: friendNumber, friendNumber: userNumber },
+              { $set: { friendMassages: userChatHistory } },
+            );
+            if (
+              updateUserChatHistory.acknowledged &&
+              updateUserFriendChatHistory.acknowledged
+            ) {
+              console.log("sent to user with no friend");
+              socket.to(room).emit("recive-massage", massage);
+            }
+          } else {
+            const useroldChatHistory = findUser[0].friendMassages;
+            const userMassageFormat = massage;
+            const userChatHistory =
+              useroldChatHistory.length !== 0
+                ? [...useroldChatHistory, userMassageFormat]
+                : [userMassageFormat];
+            const updateUserFriendChatHistory = await friendsDetails.updateOne(
+              { userId: friendNumber, friendNumber: userNumber },
+              { $set: { friendMassages: userChatHistory } },
+            );
+            if (
+              updateUserChatHistory.acknowledged &&
+              updateUserFriendChatHistory.acknowledged
+            ) {
+              console.log("sent to user with friend");
+              socket.to(room).emit("recive-massage", massage);
+            }
           }
         } catch (error) {
           console.log(error);
         }
       }
       saveChatHistory();
-      socket.to(room).emit("recive-massage", massage);
+    });
+    socket.on("user-typing", (data, room) => {
+      socket.to(room).emit("is-typing", data);
     });
     //*============== send group massages
     socket.on("group-massage", (massage, group) => {
@@ -119,6 +145,18 @@ mongose.connect("mongodb://localhost:27017/").then(() => {
     //*=============== connnect users to a group
     socket.on("join-group", (group) => {
       socket.join(group);
+    });
+    //*=============== listen on offer requst
+    socket.on("offer", (offer, room) => {
+      socket.to(room).emit("offer", offer);
+    });
+    //*=============== listen on answer requst
+    socket.on("answer", (answer, room) => {
+      socket.to(room).emit("answer", answer);
+    });
+    //*=============== listen on ice candidate requst
+    socket.on("ice-candidate", (candidate, room) => {
+      socket.to(room).emit("ice-candidate", candidate);
     });
   });
 });

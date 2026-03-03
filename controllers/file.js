@@ -2,6 +2,7 @@ const express = require("express");
 const fileRouter = express.Router();
 //*=============== use multer
 const multer = require("multer");
+const upload = multer({});
 
 fileRouter.get("/", (req, res) => {
   console.log("hi");
