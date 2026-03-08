@@ -186,5 +186,8 @@ appServer.post("/g/u/friends", async (req, res) => {
     console.log(error);
   }
 });
+appServer.get("/keep/awake", (req, res) => {
+  res.status(200).json({ massage: "app up and runing" });
+});
 
 module.exports = appServer;

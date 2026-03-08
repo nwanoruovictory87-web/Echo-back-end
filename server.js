@@ -11,7 +11,7 @@ const cors = require("cors");
 //*=============== server user cross origin resource sharing (cors)
 app.use(
   cors({
-    origin: "https://nwanoruovictory87-web.github.io/Echo-front-end-server/",
+    origin: "https://nwanoruovictory87-web.github.io",
   }),
 );
 //*=============== use json to format data requst
@@ -43,9 +43,7 @@ mongose
       //*=============== io sever connnection takes serverport as first agument ( must ) and cors as secound agument ( optional )
       //*=============== get cors // cors tells the server which port our client is on cors takes origin as a propaty name
       cors: {
-        origin: [
-          "https://nwanoruovictory87-web.github.io/Echo-front-end-server/",
-        ],
+        origin: ["https://nwanoruovictory87-web.github.io"],
       },
     });
     //*=============== make handshake with io as our socket port
