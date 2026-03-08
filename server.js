@@ -52,7 +52,7 @@ mongose
           const userNumber = massage.from;
           const friendNumber = room;
           const type = massage.type;
-          console.log(type);
+          //console.log(type);
           try {
             //*=============== find user and update chat
             const findFriend = await friendsDetails.find({
@@ -108,7 +108,7 @@ mongose
                 updateUserChatHistory.acknowledged &&
                 updateUserFriendChatHistory.acknowledged
               ) {
-                console.log("sent to user with no friend");
+                //console.log("sent to user with no friend");
                 socket.to(room).emit("recive-massage", massage);
               }
             } else {
@@ -127,7 +127,7 @@ mongose
                 updateUserChatHistory.acknowledged &&
                 updateUserFriendChatHistory.acknowledged
               ) {
-                console.log("sent to user with friend");
+                //console.log("sent to user with friend");
                 socket.to(room).emit("recive-massage", massage);
               }
             }
