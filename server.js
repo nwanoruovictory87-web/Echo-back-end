@@ -9,7 +9,11 @@ const userDetails = require("./modules/userData");
 //*=============== alowe cors from client
 const cors = require("cors");
 //*=============== server user cross origin resource sharing (cors)
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(
+  cors({
+    origin: "https://nwanoruovictory87-web.github.io/Echo-front-end-server/",
+  }),
+);
 //*=============== use json to format data requst
 app.use(express.json());
 //*===============
