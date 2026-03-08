@@ -43,7 +43,9 @@ mongose
       //*=============== io sever connnection takes serverport as first agument ( must ) and cors as secound agument ( optional )
       //*=============== get cors // cors tells the server which port our client is on cors takes origin as a propaty name
       cors: {
-        origin: ["http://localhost:5173"],
+        origin: [
+          "https://nwanoruovictory87-web.github.io/Echo-front-end-server/",
+        ],
       },
     });
     //*=============== make handshake with io as our socket port
